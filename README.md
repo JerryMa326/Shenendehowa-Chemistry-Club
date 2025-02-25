@@ -2,7 +2,7 @@
 <a id="readme-top"></a>
 
 <h1 align="center">Machine Learning Model To Distinguish Copper Ion Concentration in Solution</h1>
-<h5 align="center">Hassaan Vani, Jerry Ma</h5>
+<h5 align="center">Hassaan Vani, Grady Chen, Jerry Ma</h5>
 
   <p align="center">
     By Tweaking ChatGPT code we were able to use this image as a sample image for training:
