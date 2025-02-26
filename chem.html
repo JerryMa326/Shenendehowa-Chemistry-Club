@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Detection</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/opencv.js"></script>
+</head>
+<body>
+    <h2>Upload an Image for Circle Detection HEIC format don't work</h2>
+    <input type="file" id="upload" accept="image/*">
+    <br>
+    <label>Param1 (Canny Edge Detection Threshold(higher = fewer edges)): <input type="range" id="param1" min="10" max="200" value="50" oninput="updateValue('param1Val', this.value)"><span id="param1Val">50</span></label>
+    <br>
+    <label>Param2 (Circle Detection Threshold(higher = stricter detection)): <input type="range" id="param2" min="10" max="100" value="70" oninput="updateValue('param2Val', this.value)"><span id="param2Val">70</span></label>
+    <br>
+    <label>Min Radius: <input type="range" id="minRadius" min="1" max="100" value="50" oninput="updateValue('minRadiusVal', this.value)"><span id="minRadiusVal">50</span></label>
+    <br>
+    <label>Max Radius: <input type="range" id="maxRadius" min="10" max="200" value="90" oninput="updateValue('maxRadiusVal', this.value)"><span id="maxRadiusVal">90</span></label>
+    <br>
+    <button onclick="detectCircles()">Apply Detection</button>
+    <br>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        let img = new Image();
+        let originalImage = null; // Store original resolution image
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.onload = function() {
+                    // Store original image in an off-screen canvas for detection
+                    let offscreenCanvas = document.createElement('canvas');
+                    offscreenCanvas.width = img.width;
+                    offscreenCanvas.height = img.height;
+                    let offscreenCtx = offscreenCanvas.getContext('2d');
+                    offscreenCtx.drawImage(img, 0, 0);
+                    originalImage = offscreenCanvas;
+
+                    // Resize only for viewing purposes
+                    let scaleFactor = Math.min(800 / img.width, 600 / img.height);
+                    canvas.width = img.width * scaleFactor;
+                    canvas.height = img.height * scaleFactor;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function detectCircles() {
+            if (!originalImage) {
+                console.log("No image loaded.");
+                return;
+            }
+            
+            let src = cv.imread(originalImage);
+            if (src.empty()) {
+                console.log("Error: Could not load image from canvas.");
+                return;
+            }
+
+            let gray = new cv.Mat();
+            let circles = new cv.Mat();
+            let dst = src.clone();
+
+            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+            cv.GaussianBlur(gray, gray, new cv.Size(9, 9), 2, 2);
+            
+            let param1 = parseInt(document.getElementById('param1').value);
+            let param2 = parseInt(document.getElementById('param2').value);
+            let minRadius = parseInt(document.getElementById('minRadius').value);
+            let maxRadius = parseInt(document.getElementById('maxRadius').value);
+
+            console.log(`Running detection with Param1=${param1}, Param2=${param2}, MinRadius=${minRadius}, MaxRadius=${maxRadius}`);
+
+            cv.HoughCircles(gray, circles, cv.HOUGH_GRADIENT, 1.2, 20, param1, param2, minRadius, maxRadius);
+
+            if (circles.empty()) {
+                console.log("No circles detected.");
+            } else {
+                for (let i = 0; i < circles.cols; ++i) {
+                    let x = circles.data32F[i * 3];
+                    let y = circles.data32F[i * 3 + 1];
+                    let radius = circles.data32F[i * 3 + 2];
+                    let center = new cv.Point(x, y);
+                    cv.circle(dst, center, radius, [0, 255, 0, 255], 2);
+                }
+            }
+
+            // Resize the result image for viewing
+            let scaleFactor = Math.min(800 / dst.cols, 600 / dst.rows);
+            let resizedDst = new cv.Mat();
+            cv.resize(dst, resizedDst, new cv.Size(dst.cols * scaleFactor, dst.rows * scaleFactor), 0, 0, cv.INTER_AREA);
+            cv.imshow(canvas, resizedDst);
+
+            src.delete();
+            gray.delete();
+            circles.delete();
+            dst.delete();
+            resizedDst.delete();
+        }
+
+        function updateValue(spanId, value) {
+            document.getElementById(spanId).innerText = value;
+        }
+    </script>
+</body>
+</html>
