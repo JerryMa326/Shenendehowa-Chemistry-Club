@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrolling Landing Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section:nth-child(odd) {
+            background-color: #f4f4f4;
+        }
+        .section:nth-child(even) {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">Welcome to Our Landing Page</div>
+    <div class="section">Discover Amazing Features</div>
+    <div class="section">Join Us Today</div>
+    <div class="section">Contact Us for More</div>
+    
+    <script>
+        const sections = document.querySelectorAll('.section');
+        
+        function checkSections() {
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop < window.innerHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', checkSections);
+        window.addEventListener('load', checkSections);
+    </script>
+</body>
+</html>
