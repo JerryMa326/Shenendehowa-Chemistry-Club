@@ -1,10 +1,9 @@
-<!--https://www.youtube.com/watch?v=1wfeqDyMUx4-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scrolling Landing Page with Hero Images</title>
+  <title>ACS Chem Club Demo</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,6 +23,7 @@
       overflow-x: hidden;
       background: #111;
       color: white;
+      
     }
     /* Top Navigation Bar */
     .top-bar {
@@ -45,6 +45,7 @@
       background: url('/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/Menu_Grady.png') no-repeat center center/contain;
       transition: transform 0.3s ease-in-out;
     }
+    /* Rotate menu icon when expanded */
     .top-bar.expanded .menu-icon {
       transform: rotate(90deg);
     }
@@ -60,10 +61,12 @@
       opacity: 0;
       transform: translateX(-20px);
       transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      pointer-events: none; /* Disable clicks when not visible */
     }
     .top-bar.expanded .values a {
       opacity: 1;
       transform: translateX(0);
+      pointer-events: auto; /* Enable clicks when expanded */
     }
     .top-bar.expanded .values a:nth-child(1) {
       transition-delay: 0s;
@@ -85,26 +88,45 @@
     }
     /* Hero Section */
     #hero-section {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
     }
-    /* Background image for hero section */
+    
+    /* Hero background image */
     .hero-bg {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/Menu_Grady.png') no-repeat center center/cover;
-      z-index: 1;
+      background: url('hero-bg.jpg') no-repeat center center/cover;
+      z-index: -1;
     }
     /* Hero title text */
     .hero-title {
-      position: relative;
-      z-index: 2;
-      text-align: center;
+        position: relative;
+        z-index: 2;
+        text-align: center;
     }
+    .new-bg-image {
+        position: absolute;
+        bottom: 100vh;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('images/slime_drip.png');
+ 
+
+        z-index: 1;  /* Keep it behind other elements in the hero section */
+        transition: transform 0.15s ease-out; /* Optional smoothness for animation */
+      } 
+      
+      
+    
     #title-one,
     #title-two {
       font-size: 8vw;
@@ -123,21 +145,22 @@
       color: white;
       left: 0;
     }
-    /* Side images that animate off the screen */
+    /* Side images on hero */
     .side-image {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      transition: transform 0.5s ease-out;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transform-origin: center;
+        z-index: 0;
     }
     .side-image.left {
-      left: 0;
+        left: 0%; /* Adjust as needed */
     }
     .side-image.right {
-      right: 0;
+        right: 0%; /* Adjust as needed */
     }
-    /* Other content sections */
+    
+    /* Additional Content Sections */
     .section {
       min-height: 100vh;
       display: flex;
@@ -160,43 +183,42 @@
   <div class="top-bar" id="topBar">
     <div class="menu-icon" onclick="toggleMenu()"></div>
     <div class="values" id="menu">
-      <a href="page1.html">Value 1</a>
-      <a href="page2.html">Value 2</a>
-      <a href="page3.html">Value 3</a>
-      <a href="page4.html">Value 4</a>
+      <a href="page1.html">Subpage 1</a>
+      <a href="page2.html">Subpage 2</a>
+      <a href="page3.html">Subpage 3</a>
+      <a href="page4.html">Subpage 4</a>
     </div>
     <input type="text" class="search-bar" placeholder="Search..." />
   </div>
   
   <!-- Hero Section -->
   <section id="hero-section">
-    <!-- Background image (replace hero-bg.jpg with your file) -->
+    <!-- Hero Background Image -->
     <div class="hero-bg"></div>
-    
     <!-- Hero Title -->
     <div class="hero-title">
-      <div id="title-one">SQUISH</div>
-      <div id="title-two">IT</div>
+      <div id="title-one">ACS</div>
+      <div id="title-two">CHEM CLUB</div>
     </div>
-    
-    <!-- Side Images (replace with your local files) -->
-    <img class="side-image left" src="/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/Menu_Grady.png" alt="Left Decoration" />
-    <img class="side-image right" src="/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/Menu_Grady.png" alt="Right Decoration" />
+    <!-- Side Images -->
+    <img class="side-image left" src="/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/beaker.png" alt="Left Decoration" />
+    <img class="side-image right" src="/Users/jerryma/Documents/git repo/Shenendehowa-Chemistry-Club/website/images/beaker.png" alt="Right Decoration" />
   </section>
+
   
   <!-- Additional Content Sections -->
   <div class="section">About Us Section</div>
-  <div class="section">Our Products</div>
-  <div class="section">Contact Us</div>
+  <div class="section">Our Research</div>
+  <div class="section">Officers</div>
   
   <script>
-    // Toggle top menu
+    // Toggle menu expansion on click
     const topBar = document.getElementById('topBar');
     function toggleMenu() {
       topBar.classList.toggle('expanded');
     }
     
-    // Reveal sections on scroll
+    // Reveal additional content sections on scroll
     const sections = document.querySelectorAll('.section');
     function checkSections() {
       sections.forEach(section => {
@@ -212,21 +234,35 @@
     const titleTwo = document.getElementById('title-two');
     const sideImageLeft = document.querySelector('.side-image.left');
     const sideImageRight = document.querySelector('.side-image.right');
-    
+    const newImage = document.createElement('div');
+    newImage.classList.add('new-bg-image');
+    document.getElementById('hero-section').appendChild(newImage);
+
     function handleHeroScroll() {
       const scrollY = window.scrollY;
+      const rotationAngle = scrollY * 0.1; // Adjust the multiplier to control rotation speed
+
       // Parallax movement for hero titles
-      titleOne.style.right = (scrollY * 0.5) + 'px';
-      titleTwo.style.left = (scrollY * 0.5) + 'px';
-      // Move side images off the screen as you scroll
-      sideImageLeft.style.transform = `translateX(-${scrollY * 0.8}px) translateY(-50%)`;
-      sideImageRight.style.transform = `translateX(${scrollY * 0.8}px) translateY(-50%)`;
+      titleOne.style.right = (scrollY * 0.25) + 'px';
+      titleTwo.style.left = (scrollY * 0.25) + 'px';
+
+      // Move and rotate side images off the screen as you scroll
+      sideImageLeft.style.transform = `translateX(-${scrollY * 0.8}px) translateY(-50%) rotate(-${rotationAngle}deg)`;
+      sideImageRight.style.transform = `translateX(${scrollY * 0.8}px) translateY(-50%) rotate(${rotationAngle}deg)`;
+    
+      newImage.style.transform = `translateY(${scrollY * 1.8}px)`;  // Adjust this multiplier to control speed
+
     }
     
     window.addEventListener('scroll', () => {
-      checkSections();
-      handleHeroScroll();
-    });
+
+        checkSections();
+  
+        handleHeroScroll();
+  
+      });
+
+    window.addEventListener('scroll', onScroll);
     
     window.addEventListener('load', () => {
       checkSections();
